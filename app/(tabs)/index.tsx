@@ -1,4 +1,17 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+
+//index.tsx
+
+
+//import { ChartContainer } from "@/components/appCalidadA/calidadAire";
+import { AirQualityCharts } from "@/components/appCalidadA/calidadAire";
+import React from "react";
+
+export default function CharactersScreen(){
+    return(
+        <AirQualityCharts/>
+    );
+}
+/* import { Image, StyleSheet, Platform } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -72,3 +85,4 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 });
+ */

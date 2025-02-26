@@ -48,13 +48,13 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({ onGoBack }) 
       {/* Botones de Control (igual que antes) */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleVentiladores} style={styles.button}>
-          <Text style={styles.buttonText}>Encender Ventiladores</Text>
+          <Text style={styles.buttonText}>Ventilar</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handlePurificador} style={styles.button}>
-          <Text style={styles.buttonText}>Encender Purificador</Text>
+          <Text style={styles.buttonText}>PurificarA</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleAlarmas} style={styles.button}>
-          <Text style={styles.buttonText}>Encender Alarmas</Text>
+          <Text style={styles.buttonText}>Alarmas</Text>
         </TouchableOpacity>
       </View>
 

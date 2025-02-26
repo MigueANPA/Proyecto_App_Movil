@@ -6,10 +6,10 @@ import { QualityChart } from "./aireView";
 import { GasMonitoringApp } from "./gasMonitoring"; // Importar el nuevo componente
 
 const airQualityData = [
-  { label: "Buena", value: 80, color: "#62B58F" },
-  { label: "Regular", value: 50, color: "#FFC533" },
-  { label: "Mala", value: 20, color: "#F2726F" },
-  { label: "Crítica", value: 10, color: "#E15A26" },
+  { label: "Laboratorio 1", value: 80, color: "#62B58F" },
+  { label: "Laboratorio 2", value: 50, color: "#FFC533" },
+  { label: "Laboratorio 3", value: 20, color: "#F2726F" },
+  { label: "Laboratorio 4", value: 10, color: "#E15A26" },
 ];
 
 export const AirQualityCharts = () => {
@@ -46,7 +46,7 @@ export const AirQualityCharts = () => {
         <>
           <View style={styles.header}>
             <TouchableOpacity onPress={toggleModal} style={styles.iconButton}>
-              <Ionicons name="list" size={30} color="black" />
+              <Ionicons name="list" size={35} color="black" />
             </TouchableOpacity>
           </View>
 
@@ -64,12 +64,14 @@ export const AirQualityCharts = () => {
 
           <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Gráficas Agregadas</Text>
+              <Text style={styles.modalTitle}>Agregar Labaratorio</Text>
+              <View style={styles.modalContainer}>
               {airQualityData.map(({ label }, index) => (
                 <Text key={index} style={styles.modalText}>
                   {label}
                 </Text>
               ))}
+              </View>
               <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>Cerrar</Text>
               </TouchableOpacity>
@@ -101,10 +103,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 25,
     right: 10,
+    borderRadius: 20,
   },
   scrollContainer: {
     alignItems: "center",
     paddingVertical: 30,
+  },
+  modalContainer:{
+    justifyContent: 'center',
+    padding: 20,
+    borderRadius: 10,
+    margin: "auto"
   },
   modalContent: {
     backgroundColor: "white",

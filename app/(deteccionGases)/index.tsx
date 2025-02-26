@@ -3,7 +3,7 @@
 
 
 //import { ChartContainer } from "@/components/appCalidadA/calidadAire";
-import { AirQualityCharts } from "@/components/appCalidadA/calidadAire";
+import { AirQualityCharts } from "@/components/appCalidadAire/calidadAirecard";
 import React from "react";
 
 export default function CharactersScreen(){

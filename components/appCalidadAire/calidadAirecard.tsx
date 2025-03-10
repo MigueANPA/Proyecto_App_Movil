@@ -1,97 +1,81 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, ImageBackground, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { QualityChart } from "./aireView";
-import { GasMonitoringApp } from "./gasMonitoring"; // Importar el nuevo componente
+import { GasMonitoringApp } from "./gasMonitoring";
+import { fetchCalidadAire, addNewLaboratorio } from "../firedata/firedata";
 
-const airQualityData = [
-  { label: "Laboratorio 1", value: 80, color: "#62B58F" },
-  { label: "Laboratorio 2", value: 50, color: "#FFC533" },
-  { label: "Laboratorio 3", value: 20, color: "#F2726F" },
-  { label: "Laboratorio 4", value: 10, color: "#E15A26" },
-];
-
-export const AirQualityCharts = () => {
+export const AirQualityCharts: React.FC = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [showGasMonitoring, setShowGasMonitoring] = useState(false); // Estado para controlar qué componente mostrar
+  const [showGasMonitoring, setShowGasMonitoring] = useState(false);
+  const [airQualityData, setAirQualityData] = useState<AirQualityData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  useEffect(() => {
+    fetchCalidadAire(setLoading, setAirQualityData, setError);
+  }, []);
 
-  const handleAddChart = () => {
-    // Aquí puedes agregar la lógica para agregar una nueva gráfica
-    console.log("Agregar nueva gráfica");
-  };
-
-  const handleChartPress = (label: string) => {
-    // Función que se ejecuta al presionar una gráfica
-    console.log("Gráfica seleccionada", `Has seleccionado la gráfica: ${label}`);
-    setShowGasMonitoring(true); // Mostrar GasMonitoringApp
-  };
-
-  const handleGoBack = () => {
-    setShowGasMonitoring(false); // Volver a QualityChart
+  const handleAddChart = async () => {
+    await addNewLaboratorio();
+    fetchCalidadAire(setLoading, setAirQualityData, setError);
+    setModalVisible(false);
   };
 
   return (
-    <ImageBackground
-      source={{ uri: "https://www.shutterstock.com/image-photo/good-air-quality-clean-outdoor-600nw-2421635111.jpg" }}
-      style={styles.background}
-    >
+    <View style={styles.background}>
       {showGasMonitoring ? (
-        <GasMonitoringApp onGoBack={handleGoBack} />
+        <GasMonitoringApp onGoBack={() => setShowGasMonitoring(false)} />
       ) : (
         <>
           <View style={styles.header}>
-            <TouchableOpacity onPress={toggleModal} style={styles.iconButton}>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.iconButton}>
               <Ionicons name="list" size={35} color="black" />
             </TouchableOpacity>
           </View>
 
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            {airQualityData.map(({ label, value, color }, index) => (
+            {airQualityData.map((item, index) => (
               <QualityChart
                 key={index}
-                label={label}
-                value={value}
-                color={color}
-                onPress={() => handleChartPress(label)} // Pasar la función onPress
+                value={item.value}
+                label={item.label}
+                color={item.color}
+                onPress={() => setShowGasMonitoring(true)}
               />
             ))}
           </ScrollView>
 
-          <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+          <Modal isVisible={isModalVisible}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Agregar Labaratorio</Text>
-              <View style={styles.modalContainer}>
-              {airQualityData.map(({ label }, index) => (
+              <Text style={styles.modalTitle}>Laboratorios</Text>
+              {airQualityData.map((item, index) => (
                 <Text key={index} style={styles.modalText}>
-                  {label}
+                  {item.label}
                 </Text>
               ))}
-              </View>
-              <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Cerrar</Text>
+              <TouchableOpacity onPress={handleAddChart} style={styles.addButton}>
+                <Text style={styles.buttonText}>Nuevo Laboratorio</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleAddChart} style={styles.closeButton2}>
-                <Ionicons name="add" size={30} color="black" />
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                <Text style={styles.buttonText}>Cerrar</Text>
               </TouchableOpacity>
             </View>
           </Modal>
         </>
       )}
-    </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: "cover",
     width: "100%",
     height: "100%",
+    backgroundColor:"#E8F5E9"
+
   },
   header: {
     flexDirection: "row",
@@ -103,17 +87,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 25,
     right: 10,
-    borderRadius: 20,
   },
   scrollContainer: {
     alignItems: "center",
     paddingVertical: 30,
   },
-  modalContainer:{
-    justifyContent: 'center',
+  modalContainer: {
+    justifyContent: "center",
     padding: 20,
     borderRadius: 10,
-    margin: "auto"
+    margin: "auto",
   },
   modalContent: {
     backgroundColor: "white",
@@ -136,17 +119,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#62B58F",
     borderRadius: 5,
   },
-  closeButton2: {
+  closeButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  addButton: {
     marginTop: 20,
     padding: 5,
     backgroundColor: "#62B58F",
-    borderRadius: 100,
+    borderRadius: 50,
     position: "absolute",
     top: 10,
     right: 10,
   },
-  closeButtonText: {
-    color: "white",
-    fontSize: 16,
+
+  buttonText: {
+    backgroundColor: "#2196F3",
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 10
   },
 });

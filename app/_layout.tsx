@@ -47,12 +47,26 @@ export default function RootLayout() {
     return null;
   }
 
+  if (!user) {
+    return (
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: '#222222' },
+          headerTintColor: 'white',
+        }}
+      >
+        <Stack.Screen name="aunth/login" options={{ 
+        title: "Inicio de sesión" }} />
+      </Stack>
+    );
+  }
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Drawer>
           <Drawer.Screen
-            name="(deteccionGases)"
+            name="home/index"
             options={{
               drawerLabel: 'Inicio',
               title: 'Inicio',
@@ -61,11 +75,11 @@ export default function RootLayout() {
           />
           <Drawer.Screen
             name="aunth/login"
-            options={{
-              drawerLabel: 'Inicio de Ceción',
-              title: 'Inicio de Ceción',
-              drawerIcon: ({ color }) => <FontAwesome6 name="sign-in-alt" size={24} color={color} />,
-            }}
+            options={{ 
+              title:"Inicio de sesión", 
+               drawerItemStyle: { display: 'none' }
+              }}
+          
           />
           <Drawer.Screen
             name="aunth/profile"
@@ -74,6 +88,10 @@ export default function RootLayout() {
               title: 'Perfil de Usuario',
               drawerIcon: ({ color }) => <FontAwesome6 name="user" size={24} color={color} />,
             }}
+          />
+          <Drawer.Screen
+            name="(deteccionGases)"
+            options={{ drawerItemStyle: { display: 'none' } }}
           />
           <Drawer.Screen
             name="+not-found"

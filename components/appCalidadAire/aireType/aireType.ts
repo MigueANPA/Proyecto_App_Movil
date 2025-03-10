@@ -1,10 +1,6 @@
-export interface QualityChartProps {
+ export interface AirQualityData {
   label: string;
   value: number;
   color: string;
-  onPress: (label: string) => void;
 }
-
-export interface GasMonitoringProps {
-  onGoBack: () => void;
-}
+ 

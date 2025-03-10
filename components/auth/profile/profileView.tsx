@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Button, TextInput, ActivityIndicator, Text } from 'react-native-paper';
 import { auth, sendPasswordResetEmail } from '@/lib/firebase';
-import { signOut, updateProfile, onAuthStateChanged, User, AuthError } from 'firebase/auth';
+import { signOut, updateProfile, onAuthStateChanged, User } from 'firebase/auth';
 
 export default function ProfileView() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [sendingPasswordReset, setSendingPasswordReset] = useState(false); // Loading state for password reset
+  const [sendingPasswordReset, setSendingPasswordReset] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [user, setUser] = useState<User | null>(null);
   const [resetPasswordEmailSent, setResetPasswordEmailSent] = useState(false);
-
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -44,12 +43,7 @@ export default function ProfileView() {
       await updateProfile(user, { displayName: name });
       Alert.alert("Éxito", "Perfil actualizado correctamente");
     } catch (error: any) {
-      let errorMessage = error.message;
-      if (error.code === 'auth/requires-recent-login') {
-          errorMessage = "Por favor, inicia sesión de nuevo para actualizar tu perfil.";
-      }
-      Alert.alert(`Error: ${errorMessage}`);
-      console.error("Error updating profile:", error); // Log the error for debugging
+      Alert.alert(`Error: ${error.message}`);
     } finally {
       setSaving(false);
     }
@@ -60,21 +54,14 @@ export default function ProfileView() {
       Alert.alert("Error", "Debes iniciar sesión para restablecer la contraseña.");
       return;
     }
-    setSendingPasswordReset(true); // Start loading state
+    setSendingPasswordReset(true);
     try {
       await sendPasswordResetEmail(auth, user.email);
       setResetPasswordEmailSent(true);
-      setSendingPasswordReset(false); // End loading state
     } catch (error: any) {
-      let errorMessage = error.message;
-        if (error.code === 'auth/invalid-email') {
-            errorMessage = 'Por favor, introduce una dirección de correo electrónico válida.';
-        } else if (error.code === 'auth/user-not-found') {
-            errorMessage = 'No se encontró ningún usuario con esa dirección de correo electrónico.';
-        }
-      Alert.alert(`Error: ${errorMessage}`);
-      setSendingPasswordReset(false); // End loading state even on error
-      console.error("Error sending password reset email:", error); // Log for debugging
+      Alert.alert(`Error: ${error.message}`);
+    } finally {
+      setSendingPasswordReset(false);
     }
   };
 
@@ -93,10 +80,10 @@ export default function ProfileView() {
         {saving ? "Guardando..." : "Actualizar Perfil"}
       </Button>
 
-      <Button mode="outlined" onPress={logout} style={styles.button}>
+      <Button mode="outlined" onPress={logout} style={styles.logoutButton}>
         Cerrar Sesión
       </Button>
-      <Button mode="outlined" onPress={sendResetPasswordEmail} style={styles.button}>
+      <Button mode="outlined" onPress={sendResetPasswordEmail} style={styles.resetButton}>
         {resetPasswordEmailSent ? "Correo enviado" : "Restablecer Contraseña"}
       </Button>
 
@@ -107,23 +94,47 @@ export default function ProfileView() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#F4F4F4",
+    backgroundColor: "#ECF0F1",
+    alignItems: "center",
   },
   title: {
-    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#2C3E50",
     marginBottom: 20,
   },
   input: {
-    marginBottom: 10,
+    width: "100%",
+    marginBottom: 15,
+    backgroundColor: "#FFF",
+    borderRadius: 10,
   },
   button: {
+    width: "100%",
     marginTop: 10,
+    backgroundColor: "#16A085",
+    paddingVertical: 10,
+    borderRadius: 25,
+  },
+  logoutButton: {
+    width: "100%",
+    marginTop: 10,
+    backgroundColor: "#E74C3C",
+    paddingVertical: 10,
+    borderRadius: 25,
+  },
+  resetButton: {
+    width: "100%",
+    marginTop: 10,
+    borderColor: "#3498DB",
+    borderWidth: 1,
+    paddingVertical: 10,
+    borderRadius: 25,
   },
   loading: {
     flex: 1,
@@ -131,6 +142,6 @@ const styles = StyleSheet.create({
   },
   successMessage: {
     marginTop: 10,
-    color: 'green',
+    color: "green",
   },
 });

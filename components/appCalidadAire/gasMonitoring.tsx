@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    ActivityIndicator,
-    Dimensions,
-} from "react-native";
+import {View,Text,StyleSheet,TouchableOpacity,ActivityIndicator,Dimensions} from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { fetchTiposGases } from "../firedata/firedata";
-import { Ionicons } from "@expo/vector-icons"; // Importa Ionicons
+import { Ionicons } from "@expo/vector-icons"; 
 
 interface GasMonitoringAppProps {
     onGoBack: () => void;

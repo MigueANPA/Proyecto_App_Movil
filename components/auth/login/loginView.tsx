@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { 
-  View, Text, TextInput, TouchableOpacity, Alert, StyleSheet
-} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Animated, Easing} from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { firebase } from "@/lib/firebase";
 import { router } from 'expo-router';
@@ -10,6 +8,26 @@ export const LoginView = () => {
   const auth = getAuth(firebase);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Animación de fondo
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 4000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      })
+    ).start();
+  }, []);
+
+  // Interpolación de colores
+  const backgroundColor = animatedValue.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: ["#E8F5E9", "#55e595", "#E8F5E9"],
+  });
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -27,7 +45,7 @@ export const LoginView = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { backgroundColor }]}>
       <Text style={styles.title}>Bienvenido</Text>
       <Text style={styles.subtitle}>Monitorea la calidad del aire y gases</Text>
 
@@ -53,7 +71,7 @@ export const LoginView = () => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -62,7 +80,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#E8F5E9",
     padding: 20,
   },
   title: {
@@ -109,3 +126,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+

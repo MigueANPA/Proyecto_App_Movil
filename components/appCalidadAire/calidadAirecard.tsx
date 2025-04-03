@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from "react-native";
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { QualityChart } from "./aireView";
@@ -42,24 +42,53 @@ export const AirQualityCharts: React.FC = () => {
                 value={item.value}
                 label={item.label}
                 color={item.color}
+                nombre={item.nombre || `Laboratorio ${index + 1}`} // Usar nombre o fallback
                 onPress={() => setShowGasMonitoring(true)}
               />
             ))}
           </ScrollView>
 
-          <Modal isVisible={isModalVisible}>
+          <Modal 
+            isVisible={isModalVisible}
+            backdropOpacity={0.7}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+          >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Laboratorios</Text>
-              {airQualityData.map((item, index) => (
-                <Text key={index} style={styles.modalText}>
-                  {item.label}
-                </Text>
-              ))}
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Laboratorios</Text>
+                <TouchableOpacity 
+                  onPress={() => setModalVisible(false)} 
+                  style={styles.closeModalButton}
+                >
+                  <Ionicons name="close-circle" size={28} color="#666" />
+                </TouchableOpacity>
+              </View>
+              
+              {loading ? (
+                <Text style={styles.loadingText}>Cargando...</Text>
+              ) : error ? (
+                <Text style={styles.errorText}>{error}</Text>
+              ) : (
+                <View style={styles.labsList}>
+                  {airQualityData.length === 0 ? (
+                    <Text style={styles.noDataText}>No hay laboratorios disponibles</Text>
+                  ) : (
+                    airQualityData.map((item, index) => (
+                      <View key={index} style={styles.labItem}>
+                        <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />
+                        <Text style={styles.labName}>
+                          {item.nombre || `Laboratorio ${index + 1}`}
+                        </Text>
+                        <Text style={styles.labValue}>{item.value}%</Text>
+                      </View>
+                    ))
+                  )}
+                </View>
+              )}
+              
               <TouchableOpacity onPress={handleAddChart} style={styles.addButton}>
-                <Text style={styles.buttonText}>Nuevo Laboratorio</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-                <Text style={styles.buttonText}>Cerrar</Text>
+                <Text style={styles.addButtonText}>Nuevo Laboratorio</Text>
               </TouchableOpacity>
             </View>
           </Modal>
@@ -74,8 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
-    backgroundColor:"#E8F5E9"
-
+    backgroundColor: "#E8F5E9"
   },
   header: {
     flexDirection: "row",
@@ -92,51 +120,89 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 30,
   },
-  modalContainer: {
-    justifyContent: "center",
-    padding: 20,
-    borderRadius: 10,
-    margin: "auto",
-  },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
+    borderRadius: 15,
     padding: 20,
-    borderRadius: 10,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingBottom: 15,
+    marginBottom: 15,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
+  },
+  closeModalButton: {
+    padding: 5,
+  },
+  labsList: {
     marginBottom: 20,
+    maxHeight: 300,
   },
-  modalText: {
+  labItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  colorIndicator: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  labName: {
+    flex: 1,
     fontSize: 18,
-    marginBottom: 10,
+    color: "#333",
+    fontWeight: "500",
   },
-  closeButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: "#62B58F",
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "white",
+  labValue: {
     fontSize: 16,
+    fontWeight: "bold",
+    color: "#555",
+  },
+  loadingText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#666",
+    padding: 20,
+  },
+  errorText: {
+    textAlign: "center",
+    fontSize:16,
+    color: "#e53935",
+    padding: 20,
+  },
+  noDataText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#666",
+    padding: 20,
   },
   addButton: {
-    marginTop: 20,
-    padding: 5,
-    backgroundColor: "#62B58F",
-    borderRadius: 50,
-    position: "absolute",
-    top: 10,
-    right: 10,
+    backgroundColor: "#35e3ac",
+    borderRadius: 25,
+    alignSelf: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    marginTop: 10,
+    elevation: 3,
   },
-
-  buttonText: {
-    backgroundColor: "#2196F3",
-    padding: 15,
-    borderRadius: 8,
-    marginTop: 10
+  addButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });

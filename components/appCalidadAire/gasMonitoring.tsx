@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {View,Text,StyleSheet,TouchableOpacity,ActivityIndicator,Dimensions} from "react-native";
-import { LineChart } from "react-native-chart-kit";
+import { BarChart } from "react-native-chart-kit";
 import { fetchTiposGases } from "../firedata/firedata";
 import { Ionicons } from "@expo/vector-icons"; 
 
@@ -12,7 +12,7 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
     onGoBack,
 }) => {
     const [data, setData] = useState<number[]>([0, 0, 0]);
-    const [labels, setLabels] = useState<string[]>(["CO2", "N2", "O2"]);
+    const [labels, setLabels] = useState<string[]>(["CO2", "LP", "Propano"]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [ventiladoresActivos, setVentiladoresActivos] = useState(false);
@@ -42,8 +42,7 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
     };
 
     const screenWidth = Dimensions.get("window").width;
-    const gasColors = ["#e74c3c", "#3498db", "#2ecc71"]; // Rojo, azul, verde
-
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Monitoreo de Gases</Text>
@@ -53,35 +52,42 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
             ) : error ? (
                 <Text style={styles.error}>{error}</Text>
             ) : (
-                <LineChart
+                <BarChart
                     data={{
                         labels: labels,
                         datasets: [
                             {
-                                data: data,
-                                color: (opacity = 1) => `rgba(98, 181, 143, ${opacity})`,
-                                strokeWidth: 3,
-                                stroke: "#62B58F",
+                                data: data
                             },
                         ],
                     }}
                     width={screenWidth - 40}
                     height={220}
+                    yAxisLabel=""
+                    yAxisSuffix=""
                     chartConfig={{
                         backgroundColor: "#ffffff",
                         backgroundGradientFrom: "#f0f8ff",
                         backgroundGradientTo: "#e0f2fe",
                         decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        propsForDots: {
-                            r: "6",
-                            strokeWidth: "2",
-                            stroke: "#62B58F",
+                        color: (opacity = 1, index) => {
+                            // Usa colores distintos basados en el índice
+                            const colors = [
+                                `rgba(255, 87, 51, ${opacity})`, // Rojo-naranja para CO2
+                                `rgba(51, 168, 255, ${opacity})`, // Azul para LP
+                                `rgba(51, 255, 87, ${opacity})`   // Verde para Propano
+                            ];
+                            return index !== undefined ? colors[index] : colors[0];
                         },
+                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                        barPercentage: 0.8,
+                        useShadowColorFromDataset: false
                     }}
-                    bezier
                     style={styles.chart}
+                    showValuesOnTopOfBars={true}
+                    fromZero={true}
+                    verticalLabelRotation={0}
+                    horizontalLabelRotation={0}
                 />
             )}
 
@@ -94,11 +100,14 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
                     ]}
                 >
                     <Ionicons
-                        name="fan"
+                        name="help-circle"
                         size={24}
                         color={ventiladoresActivos ? "white" : "#333"}
                     />
-                    <Text style={styles.buttonText}>Ventilar</Text>
+                    <Text style={[
+                        styles.buttonText,
+                        { color: ventiladoresActivos ? "white" : "#333" }
+                    ]}>Ventilar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={handlePurificador}
@@ -112,7 +121,10 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
                         size={24}
                         color={purificadorActivo ? "white" : "#333"}
                     />
-                    <Text style={styles.buttonText}>Purificar</Text>
+                    <Text style={[
+                        styles.buttonText,
+                        { color: purificadorActivo ? "white" : "#333" }
+                    ]}>Purificar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={handleAlarmas}
@@ -126,7 +138,10 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
                         size={24}
                         color={alarmasActivas ? "white" : "#333"}
                     />
-                    <Text style={styles.buttonText}>Alarmas</Text>
+                    <Text style={[
+                        styles.buttonText,
+                        { color: alarmasActivas ? "white" : "#333" }
+                    ]}>Alarmas</Text>
                 </TouchableOpacity>
             </View>
 
@@ -191,9 +206,9 @@ const styles = StyleSheet.create({
         width: "80%",
     },
     buttonText: {
-        color: "white",
         fontSize: 16,
         fontWeight: "bold",
-        marginLeft: 8
+        marginLeft: 8,
+        color: "white",
     },
 });

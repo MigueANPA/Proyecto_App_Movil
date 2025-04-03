@@ -1,9 +1,10 @@
 
 interface AirQualityData {
-    label: string;
-    value: number;
-    color: string;
-  }
+  label: string;
+  value: number;
+  color: string;
+  nombre?: string; 
+}
   
   interface GasData {
     C02?: number;

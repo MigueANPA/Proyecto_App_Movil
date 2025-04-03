@@ -7,7 +7,7 @@ export default function HomeScreen() {
             
               <Image
                 style={styles.image}
-                source={{uri:"https://scontent-qro1-1.xx.fbcdn.net/v/t39.30808-6/480969572_650363100844587_4839487325235903104_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEZlzJiARep8qCCgheeON30n9GUFt75a3Cf0ZQW3vlrcF2x-n5-2aS9cLQbIJFaqs48W-NQ2nKjS6tfAvPQG8Nx&_nc_ohc=JTwuHoMNcpoQ7kNvgEWYqWC&_nc_oc=Adh-4D9FlNKzOoH0iEiMMbj7nsO-ocfajWPHLtywWYpjgqLQwvSP3D7S9kVbjTRmRVo&_nc_zt=23&_nc_ht=scontent-qro1-1.xx&_nc_gid=AY252YzyD9KBItu-Tj_WRm5&oh=00_AYDyM_hrTt8nGrC7JvJpmDlNnAMZHF01zmGJOfZZ0lv36Q&oe=67C6AB72"}}
+                source={{uri:"https://www.canva.com/design/DAGjmf10AMs/H_JnQRfJYUqp6Fa44ajHuw/edit?utm_content=DAGjmf10AMs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"}}
             />
        
             <View style={styles.buttonContainer}>

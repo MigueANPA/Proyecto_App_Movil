@@ -6,12 +6,13 @@ interface AirQualityData {
   label: string;
   value: number;
   color: string;
+  nombre?: string; // Añadido el campo nombre como opcional
 }
 
 interface GasData {
   CO2?: number;
-  N2?: number;
-  O2?: number;
+  LP?: number;
+  Propano?: number;
   timestamp?: any;
 }
 
@@ -36,12 +37,15 @@ export const fetchCalidadAire = async (
       
       // Buscar el valor en cualquiera de los posibles campos
       const value = Math.max(0, Math.min(100, 
-        docData.calidad !== undefined ? docData.calidad : 
+        docData.calidad !== undefined ? docData.calidad :
         docData.canlidad !== undefined ? docData.canlidad : 0
       ));
       
       // Buscar la etiqueta en el campo calidadA
       const label = docData.calidadA || "Desconocida";
+      
+      // Obtener el campo nombre si existe
+      const nombre = docData.nombre || "";
       
       // Usar el color de la base de datos o asignar uno según la etiqueta
       let color = docData.color;
@@ -63,7 +67,8 @@ export const fetchCalidadAire = async (
       return {
         label,
         value,
-        color
+        color,
+        nombre // Incluir el nombre en el objeto retornado
       };
     });
     
@@ -89,10 +94,10 @@ export const fetchTiposGases = async (
     
     const gases = {
       "CO2": gasData?.CO2 || 0,
-      "N2": gasData?.N2 || 0,
-      "O2": gasData?.O2 || 0,
+      "LP": gasData?.LP || 0,
+      "Propano": gasData?.Propano || 0,
     };
-
+  
     setLabels(Object.keys(gases));
     setData(Object.values(gases));
   } catch (error) {
@@ -110,6 +115,7 @@ export const addNewLaboratorio = async () => {
   await addDoc(collection(firebase_db, "calidad_a"), {
     calidad: 0,
     calidadA: `Laboratorio ${nextNumber}`,
-    color: "#2196F3"
+    color: "#2196F3",
+    nombre: `Lab ${nextNumber}` // También añadir un nombre por defecto
   });
 };

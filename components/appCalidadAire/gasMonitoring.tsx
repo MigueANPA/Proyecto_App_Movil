@@ -70,14 +70,15 @@ export const GasMonitoringApp: React.FC<GasMonitoringAppProps> = ({
                         backgroundGradientFrom: "#f0f8ff",
                         backgroundGradientTo: "#e0f2fe",
                         decimalPlaces: 0,
-                        color: (opacity = 1, index) => {
+                        color: (opacity, index) => {
                             // Usa colores distintos basados en el índice
                             const colors = [
-                                `rgba(255, 87, 51, ${opacity})`, // Rojo-naranja para CO2
-                                `rgba(51, 168, 255, ${opacity})`, // Azul para LP
-                                `rgba(51, 255, 87, ${opacity})`   // Verde para Propano
+                                `rgba(255, 87, 51, ${opacity || 1})`, // Rojo-naranja para CO2
+                                `rgba(51, 168, 255, ${opacity || 1})`, // Azul para LP
+                                `rgba(51, 255, 87, ${opacity || 1})`   // Verde para Propano
                             ];
-                            return index !== undefined ? colors[index] : colors[0];
+                            const colorIndex = index ?? 0;
+                            return colors[colorIndex];
                         },
                         labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                         barPercentage: 0.8,

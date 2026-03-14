@@ -23,6 +23,32 @@ export const AirQualityCharts: React.FC = () => {
     setModalVisible(false);
   };
 
+  const renderLabsContent = () => {
+    if (loading) {
+      return <Text style={styles.loadingText}>Cargando...</Text>;
+    }
+    if (error) {
+      return <Text style={styles.errorText}>{error}</Text>;
+    }
+    return (
+      <View style={styles.labsList}>
+        {airQualityData.length === 0 ? (
+          <Text style={styles.noDataText}>No hay laboratorios disponibles</Text>
+        ) : (
+          airQualityData.map((item, index) => (
+            <View key={item.nombre || `modal-${index}`} style={styles.labItem}>
+              <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />
+              <Text style={styles.labName}>
+                {item.nombre || `Laboratorio ${index + 1}`}
+              </Text>
+              <Text style={styles.labValue}>{item.value}%</Text>
+            </View>
+          ))
+        )}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.background}>
       {showGasMonitoring ? (
@@ -38,7 +64,7 @@ export const AirQualityCharts: React.FC = () => {
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             {airQualityData.map((item, index) => (
               <QualityChart
-                key={index}
+                key={item.nombre || `chart-${index}`}
                 value={item.value}
                 label={item.label}
                 color={item.color}
@@ -65,27 +91,7 @@ export const AirQualityCharts: React.FC = () => {
                 </TouchableOpacity>
               </View>
               
-              {loading ? (
-                <Text style={styles.loadingText}>Cargando...</Text>
-              ) : error ? (
-                <Text style={styles.errorText}>{error}</Text>
-              ) : (
-                <View style={styles.labsList}>
-                  {airQualityData.length === 0 ? (
-                    <Text style={styles.noDataText}>No hay laboratorios disponibles</Text>
-                  ) : (
-                    airQualityData.map((item, index) => (
-                      <View key={index} style={styles.labItem}>
-                        <View style={[styles.colorIndicator, { backgroundColor: item.color }]} />
-                        <Text style={styles.labName}>
-                          {item.nombre || `Laboratorio ${index + 1}`}
-                        </Text>
-                        <Text style={styles.labValue}>{item.value}%</Text>
-                      </View>
-                    ))
-                  )}
-                </View>
-              )}
+              {renderLabsContent()}
               
               <TouchableOpacity onPress={handleAddChart} style={styles.addButton}>
                 <Text style={styles.addButtonText}>Nuevo Laboratorio</Text>

@@ -33,11 +33,10 @@ export function IconSymbol({
   color,
   style,
 }: {
-  name: IconSymbolName;
-  size?: number;
-  color: string | OpaqueColorValue;
-  style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
+  readonly name: IconSymbolName;
+  readonly size?: number;
+  readonly color: string | OpaqueColorValue;
+  readonly style?: StyleProp<ViewStyle>;
 }) {
   return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
 }

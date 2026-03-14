@@ -1,5 +1,5 @@
 import { firebase_db } from "@/lib/firebase";
-import { collection, getDocs, query, orderBy, limit, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, addDoc } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 
 interface AirQualityData {
@@ -36,10 +36,13 @@ export const fetchCalidadAire = async (
       const docData = doc.data();
       
       // Buscar el valor en cualquiera de los posibles campos
-      const value = Math.max(0, Math.min(100, 
-        docData.calidad !== undefined ? docData.calidad :
-        docData.canlidad !== undefined ? docData.canlidad : 0
-      ));
+      let value = 0;
+      if (docData.calidad != null) {
+        value = docData.calidad;
+      } else if (docData.canlidad != null) {
+        value = docData.canlidad;
+      }
+      value = Math.max(0, Math.min(100, value));
       
       // Buscar la etiqueta en el campo calidadA
       const label = docData.calidadA || "Desconocida";

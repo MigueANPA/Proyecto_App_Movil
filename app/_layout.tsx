@@ -15,6 +15,9 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 // Evita que la pantalla de carga se oculte automáticamente antes de completar la carga de recursos.
 SplashScreen.preventAutoHideAsync();
 
+const HomeIcon = ({ color }: { color: string }) => <FontAwesome6 name="house" size={24} color={color} />;
+const UserIcon = ({ color }: { color: string }) => <FontAwesome6 name="user" size={24} color={color} />;
+
 export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
   const colorScheme = useColorScheme();
@@ -70,7 +73,7 @@ export default function RootLayout() {
             options={{
               drawerLabel: 'Inicio',
               title: 'Inicio',
-              drawerIcon: ({ color }) => <FontAwesome6 name="house" size={24} color={color} />,
+              drawerIcon: HomeIcon,
             }}
           />
           <Drawer.Screen
@@ -86,7 +89,7 @@ export default function RootLayout() {
             options={{
               drawerLabel: 'Perfil de Usario',
               title: 'Perfil de Usuario',
-              drawerIcon: ({ color }) => <FontAwesome6 name="user" size={24} color={color} />,
+              drawerIcon: UserIcon,
             }}
           />
           <Drawer.Screen

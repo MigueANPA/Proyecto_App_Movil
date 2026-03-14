@@ -7,7 +7,6 @@ import { signOut, updateProfile, onAuthStateChanged, User } from 'firebase/auth'
 export default function ProfileView() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [sendingPasswordReset, setSendingPasswordReset] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [user, setUser] = useState<User | null>(null);
@@ -54,14 +53,11 @@ export default function ProfileView() {
       Alert.alert("Error", "Debes iniciar sesión para restablecer la contraseña.");
       return;
     }
-    setSendingPasswordReset(true);
     try {
       await sendPasswordResetEmail(auth, user.email);
       setResetPasswordEmailSent(true);
     } catch (error: any) {
       Alert.alert(`Error: ${error.message}`);
-    } finally {
-      setSendingPasswordReset(false);
     }
   };
 

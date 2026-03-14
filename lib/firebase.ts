@@ -21,19 +21,20 @@ const firebase = initializeApp(firebaseConfig);
 export const firebase_db = getFirestore(firebase);
 export const rtdb = getDatabase(firebase);
 export const auth = getAuth(firebase);
-export { sendPasswordResetEmail };
+export { sendPasswordResetEmail } from "firebase/auth";
 
 // Analytics con mejor manejo de errores
-let analytics: null | ReturnType<typeof getAnalytics> = null;
 const initAnalytics = async () => {
   try {
     if (await isSupported()) {
-      analytics = getAnalytics(firebase);
+      return getAnalytics(firebase);
     }
   } catch (error) {
     console.error("Error initializing Analytics:", error);
   }
+  return null;
 };
-initAnalytics();
+
+const analytics = await initAnalytics();
 
 export { firebase, analytics };

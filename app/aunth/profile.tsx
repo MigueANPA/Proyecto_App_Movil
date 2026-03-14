@@ -1,4 +1,3 @@
-ProfileView
 import ProfileView from "@/components/auth/profile/profileView";
 
 
